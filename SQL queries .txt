@@ -1,0 +1,359 @@
+
+--1) Add primary key to both tables
+Alter table orders
+add column id int generated always as identity primary key;
+
+Alter table events
+add column id int generated always as identity primary key;
+
+--2) Data exploration
+-- 2a. amount of orders
+select count(*)from orders
+
+select distinct product_category
+from orders
+order by product_category
+
+select count(distinct event_name), event_name
+from order_data_complete
+group by event_name
+having count(event_name)>1
+
+--2b explore date formats
+select count(*) as number,
+min(order_date) as example,
+regexp_replace(regexp_replace(lower(trim(order_date)), '\d','D','g'),'[a-z]', 'L', 'g') as pattern
+from orders
+group by pattern
+order by number;
+
+--3) Fix date time column
+
+--3a. Standardize all timestamps into one unified timestamp format for orders
+--3b. create separate column
+alter table orders add column order_date_ts timestamp;
+
+update orders
+set order_date_ts=case
+when order_date ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2} (AM|PM)$' then to_timestamp(order_date, 'MM/DD/YYYY HH12:MI AM')
+when order_date ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$' then to_timestamp(replace(replace(order_date, 'T', ' '), 'Z', ''), 'YYYY-MM-DD HH24:MI:SS')
+when order_date ~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+then to_timestamp(order_date, 'YYYY-MM-DD HH24:MI:SS')
+when order_date ~ '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}$'
+then to_timestamp(order_date, 'YYYY/MM/DD HH24:MI')
+when order_date ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+then to_timestamp(order_date, 'DD/MM/YYYY HH24:MI')
+when order_date ~ '^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$'
+then to_timestamp(order_date, 'DD-MM-YYYY HH24:MI')
+Else NULL
+END;
+
+--Standardize all timestamps into one unified timestamp format for events. 
+--Safe transformation (best practice). Converted text to date in a new column (order_date_ds) to preserve raw data.
+--event_time
+
+select count(*) as number,
+min(event_time) as example,
+regexp_replace(regexp_replace(lower(trim(event_time)), '\d','D','g'),'[a-z]', 'L', 'g') as pattern
+from events
+group by pattern
+order by number;
+
+--create separate column
+alter table events add column event_time_ts timestamp
+
+update events
+set event_time_ts=case
+when event_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2} (AM|PM)$' then to_timestamp(event_time, 'MM/DD/YYYY HH12:MI AM')
+when event_time ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$' then to_timestamp(replace(replace(event_time, 'T', ' '), 'Z', ''), 'YYYY-MM-DD HH24:MI:SS')
+when event_time ~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+then to_timestamp(event_time, 'YYYY-MM-DD HH24:MI:SS')
+when event_time ~ '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}$'
+then to_timestamp(event_time, 'YYYY/MM/DD HH24:MI')
+when event_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+then to_timestamp(event_time, 'DD/MM/YYYY HH24:MI')
+when event_time ~ '^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$'
+then to_timestamp(event_time, 'DD-MM-YYYY HH24:MI')
+Else NULL
+END;
+
+--session_start_time
+select count(*) as number,
+min(session_start_time) as example,
+regexp_replace(regexp_replace(lower(trim(session_start_time)), '\d','D','g'),'[a-z]', 'L', 'g') as pattern
+from events
+group by pattern
+order by number;
+
+--create separate column
+alter table events add column session_start_time_ts timestamp;
+
+update events
+set session_start_time_ts=case
+when session_start_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2} (AM|PM)$' then to_timestamp(session_start_time, 'MM/DD/YYYY HH12:MI AM')
+when session_start_time ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+then to_timestamp(replace(replace(session_start_time, 'T', ' '), 'Z', ''), 'YYYY-MM-DD HH24:MI:SS')
+when session_start_time ~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+then to_timestamp(session_start_time, 'YYYY-MM-DD HH24:MI:SS')
+when session_start_time ~ '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}$'
+then to_timestamp(session_start_time, 'YYYY/MM/DD HH24:MI')
+when session_start_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+then to_timestamp(session_start_time, 'DD/MM/YYYY HH24:MI')
+when session_start_time ~ '^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$'
+then to_timestamp(session_start_time, 'DD-MM-YYYY HH24:MI')
+Else NULL
+END;
+
+--session_end_time
+select count(*) as number,
+min(session_end_time) as example,
+regexp_replace(regexp_replace(lower(trim(session_end_time)), '\d','D','g'),'[a-z]', 'L', 'g') as pattern
+from events
+group by pattern
+order by number;
+
+--create separate column
+alter table events add column session_end_time_ts timestamp;
+
+update events
+set session_end_time_ts=case
+when session_end_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2} (AM|PM)$' then to_timestamp(session_end_time, 'MM/DD/YYYY HH12:MI AM')
+when session_end_time ~ '^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$'
+then to_timestamp(replace(replace(session_end_time, 'T', ' '), 'Z', ''), 'YYYY-MM-DD HH24:MI:SS')
+when session_end_time ~ '^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$'
+then to_timestamp(session_end_time, 'YYYY-MM-DD HH24:MI:SS')
+when session_end_time ~ '^\d{4}/\d{2}/\d{2} \d{2}:\d{2}$'
+then to_timestamp(session_end_time, 'YYYY/MM/DD HH24:MI')
+when session_end_time ~ '^\d{2}/\d{2}/\d{4} \d{2}:\d{2}$'
+then to_timestamp(session_end_time, 'DD/MM/YYYY HH24:MI')
+when session_end_time ~ '^\d{2}-\d{2}-\d{4} \d{2}:\d{2}$'
+then to_timestamp(session_end_time, 'DD-MM-YYYY HH24:MI')
+Else NULL
+END;
+
+--remove original columns
+alter table events
+drop column event_time
+drop session_start_time
+drop column session send 
+
+--4) convert text values to lowercase
+update orders
+set 
+product_name = lower(product_name),
+product_category=lower(product_category),
+order_number = lower(order_number);
+
+update events
+set event_name = lower(event_name),
+session_id = lower(session_id);
+
+--5) fix product category names
+update orders
+set product_category = regexp_replace(lower(trim(product_category)), '[_-]+', ' ', 'g');
+
+update orders set product_category = 'bedroom' where product_category = 'bed room';
+update orders set product_category = 'chair' where product_category = 'chairs';
+update orders set product_category = 'desk' where product_category ='desks';
+update orders set product_category = 'light' where product_category ='lighting';
+update orders set product_category = 'sofa' where product_category ='sofas';
+update orders set product_category = 'storage' where product_category ='storag';
+update orders set product_category = 'table' where product_category ='tables';
+update orders set product_category = 'textile' where product_category ='textiles';
+
+--now fix product names
+
+select distinct product_name
+from orders
+order by product_name
+
+update orders
+set product_name = regexp_replace(lower(trim(product_name)), '[_-]+', ' ', 'g');
+
+update orders set product_name = 'bed' where trim(product_name) in ('bedframe oak', 'oak bedframe');
+update orders set product_name = 'bookshelf' where product_name = 'bookshelf slim';
+update orders set product_name = 'chair' where product_name in('chair urban', 'pop stool', 'stool', 'stool pop', 'urban chair');
+update orders set product_name = 'bookshelf' where product_name in('bookshelf slim', 'slim bookshelf');
+update orders set product_name = 'couch' where product_name in('couch cozy', 'cozy couch');
+update orders set product_name = 'desk' where product_name in('desk ergo', 'ergo desk', 'nordic table', 'table nordic');
+update orders set product_name = 'lamp' where product_name in ('lamp aura', 'aura lamp');
+update orders set product_name = 'mattress' where product_name in ('mattress air', 'matress', 'air mattress');
+update orders set product_name = 'rug' where product_name in('rug comfy', 'comfy rug');
+
+--fill in product category and product name based on each other's fields
+-- check where product category is unknown and fill in the information. Since product name and category are very similar, only product category will be fixed for further use
+select product_category, product_name
+from orders
+where product_category = 'unknown' 
+
+update orders
+set product_category=
+case when product_name='rug' then 'textile'
+when product_name='chair' then 'chair'
+when product_name='desk' then 'desk'
+when product_name='bed' then 'bedroom'
+when product_name='bookshelf' then 'storage'
+when product_name='lamp' then 'lamp'
+when product_name='couch' then 'couch'
+when product_name='mattress' then 'bedroom'
+when product_name='table' then 'desk'
+else 'unknown' end;
+
+--6) remove currency sign before each number for actual_product_price, order_total, discount_applied_currency and stadardize formatting
+--Direct overwrite (practical)
+
+update orders set actual_product_price = regexp_replace(actual_product_price, E'[\\s\\$€£₽¥₴₺]', ' ', 'g');
+update orders set actual_product_price= replace(actual_product_price, ',', '.')
+
+update orders set order_total = regexp_replace(order_total, E'[\\s\\$€£₽¥₴₺]', ' ', 'g');
+update orders set order_total= replace(order_total, ',', '.');
+
+update orders set discount_applied_currency = regexp_replace(discount_applied_currency, E'[\\s\\$€£₽¥₴₺]', ' ', 'g');
+update orders set discount_applied_currency= replace(discount_applied_currency, ',', '.');
+
+--some numbers have thousands separator as a dot and I need to remove it
+update orders
+set order_total = regexp_replace(order_total, '\.(?=\d{3}\.)', '', 'g');
+
+update orders
+set actual_product_price = regexp_replace(actual_product_price, '\.(?=\d{3}\.)', '', 'g');
+
+update orders
+set discount_applied_currency = regexp_replace(discount_applied_currency, '\.(?=\d{3}\.)', '', 'g');
+
+-- Remove the letter in user_id to convert to integer
+update orders
+set user_id = right(user_id,5);
+
+--7) Convert necessary columns to correct data type
+--orders
+alter table orders
+alter column user_id type integer using cast(user_id as integer),
+alter column actual_product_price type numeric using cast(actual_product_price as numeric),
+alter column order_total type numeric using cast(order_total as numeric),
+alter column discount_applied_currency type numeric using cast(discount_applied_currency as numeric);
+
+--events
+alter table events
+alter column user_id type integer using cast(user_id as integer),
+
+
+--8)NULL exploration. Find out how many NULLs exist in each column and calculate % form total to understand data completeness 
+--orders [NULLs exist in order_date_ts, user_id, product_name, product_categoey, order_total, discount_applied_currency]
+select sum(case when order_number is null then 1 else 0 end)*100.0/ count(*) as order_number_null,
+sum(case when order_date_ts is null then 1 else 0 end)*100.0/ count(*) as order_date_ts_null,
+sum(case when user_id is null then 1 else 0 end)*100.0/ count(*) as user_id_null,
+sum(case when product_name is null then 1 else 0 end)*100.0/ count(*) as product_name_null,
+sum(case when product_category is null then 1 else 0 end)*100.0/ count(*) as product_category_null,
+sum(case when actual_product_price is null then 1 else 0 end)*100.0/ count(*) as actual_product_price_null,
+sum(case when quantity is null then 1 else 0 end)*100.0/ count(*) as quantity_null,
+sum(case when order_total is null then 1 else 0 end)*100.0/ count(*) as order_total_null,
+sum(case when discount_applied_currency is null then 1 else 0 end)*100.0/ count(*) as discount_applied_currency_null
+from orders
+
+--events [NULLs exist in session_id and event_name]
+select sum(case when user_id is null then 1 else 0 end) *100.0/ count(*) as user_id_null,
+sum(case when session_id is null then 1 else 0 end)*100.0/ count(*) as session_id_null,
+sum(case when event_name is null then 1 else 0 end)*100.0/ count(*) as event_name_null,
+sum(case when session_start_time_ts is null then 1 else 0 end)*100.0/ count(*) as session_start_time_ts_null,
+sum(case when session_end_time is null then 1 else 0 end)*100.0/ count(*) as session_end_time_ts_null
+from events
+
+--recalculate order_total by using quantity and actual product price and discount
+select order_number, quantity,actual_product_price, discount_applied_currency, (quantity*actual_product_price)- coalesce(discount_applied_currency,0) as recaclulated_value, order_total
+from orders
+where order_total is null
+limit 10;
+
+--now update order_total (NULL) with the new calculated values
+update orders
+set order_total= (quantity*actual_product_price)- coalesce(discount_applied_currency,0)
+where order_total is null
+and quantity is not null
+and actual_product_price is not null
+-- check if there are any order totals with NULLs [No]
+select count(*) filter (where order_total is null) as order_total_nulls
+from orders
+
+--replace NULLs in other fields
+--orders
+update orders set product_name = 'Unknown' where product_name is null;
+update orders set product_category = 'Unknown' where product_category is null;
+update orders set discount_applied_currency = 0 where discount_applied_currency is null;
+update events set event_name = 'Unknown' where event_name is null;
+
+--9) create extra columns 
+--create column session_duration
+alter table events add column session_duration_min numeric(10,2);
+
+update events
+set session_duration_min= 
+case when session_start_time_ts is not null
+and session_end_time_ts is not null
+and session_end_time_ts >= session_start_time_ts
+then round(extract(epoch from(session_end_time_ts- session_start_time_ts)) / 60, 2) else null
+end;
+
+-- create column order_total by using the following formula (actual product price* quantity)- discount. Since the data set was syntetically generated, I need to make sure that numbers match. In real life this would rarely happen as order total would be extracted directly from ERP.
+
+update orders
+set order_total=round(((actual_product_price * quantity) - discount_applied_currency),2)
+
+-- add an extra column to calculate the discount percentage
+alter table orders
+add column discount_perc numeric;
+
+update orders
+set discount_perc= round((discount_applied_currency/(actual_product_price*quantity))* 100, 2)
+
+--10) create one view with all columns for export to visualisation tool excluding rows with NULL
+create view order_data_clean2 as
+select o.order_number, o.order_date_ts, o.user_id as order_user_id, o.product_category, o.actual_product_price, o.quantity, o.order_total, o.discount_applied_currency, o.discount_perc,
+e.user_id as events_user_id, e.session_id, e.event_name, e.event_time_ts, e.session_duration_min
+from orders o
+join events e using (user_id)
+where o.order_number is not null 
+and o.order_date_ts is not null 
+and o.user_id is not null
+and e.session_id is not null
+and e.session_duration_min is not null;
+
+--create the final table based on a view
+create table order_data_full as
+select * from order_data_clean2
+
+--11) final data check
+--duplicates events table
+SELECT session_id, order_user_id, event_name, event_time_ts, COUNT(*)
+FROM order_data_full
+GROUP BY session_id, order_user_id, event_name, event_time_ts
+HAVING COUNT(*) > 1;
+
+--find duplicates in event table
+select distinct order_number, count(*) from orders
+group by order_number
+having count(*)>1
+orders
+--find duplicates in orders table
+select order_number, user_id, product_name, quantity, actual_product_price, discount_applied_currency, order_date_ts, count(*)
+from orders
+group by order_number, user_id, product_name, quantity, actual_product_price, discount_applied_currency, order_date_ts
+having count (*) > 1;
+
+--events
+select session_id, user_id, event_name, event_time_ts,
+count(*) 
+from events
+group by session_id, user_id, event_name, event_time_ts
+having count(*) > 1;
+
+--exclude non sense numbers [none found]
+select * 
+from order_data_complete
+where order_total < 0 
+or discount_applied_currency < 0 
+or actual_product_price < 0
+or session_duration_min <0
+or discount_perc<0
+
+
