@@ -23,7 +23,7 @@ Design a dashboard to help a digital marketing manager analyze sales performance
 
 ## 📁 Files
 - Detailed project description
-- [Interactive dashboard on Tableau Public] https://public.tableau.com/views/Sales_orders_Project2_Alina/Story1?:language=en-GB&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link 
+- Interactive dashboard on Tableau Public https://public.tableau.com/views/Sales_orders_Project2_Alina/Story1?:language=en-GB&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link 
 
 
 <img width="970" height="673" alt="Screenshot 2025-11-04 at 15 53 19" src="https://github.com/user-attachments/assets/6be8a4c0-057d-4779-b5da-1d21733d532c" /> 
