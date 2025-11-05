@@ -22,7 +22,6 @@ Design a dashboard to help a digital marketing manager analyze sales performance
 - **Excel / CSV** — for initial data structure  
 
 ## 📁 Files
-- Detailed project description
 - Interactive dashboard on Tableau Public https://public.tableau.com/views/Sales_orders_Project2_Alina/Story1?:language=en-GB&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link 
 
 
