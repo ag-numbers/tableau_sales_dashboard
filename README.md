@@ -1,8 +1,11 @@
 # tableau_sales_dashboard
 Tableau project analyzing sales and discounts for a furniture e-commerce business
 
-## 🎯 Goal
-Design a dashboard to help a digital marketing manager analyze sales performance, product trends, and discount effectiveness for a furniture e-commerce website.
+## 🎯 Goal and Summary
+**Goal:** Design a dashboard to help a digital marketing manager analyze sales performance, product trends, and discount effectiveness for a furniture e-commerce website.
+**Summary:** Sales went up because of discounts, but profits went down.
+The data showed that most sales came from the Bedroom and Desk categories, making the business too dependent on them. To grow steadily, the company should balance its product mix and review its discount strategy.
+
 
 ## 📊 Insights
 - Sales grew from April to June, then slightly declined in summer.
