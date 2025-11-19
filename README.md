@@ -1,4 +1,4 @@
-# tableau_sales_dashboard
+# sql_tableau_sales_dashboard
 Tableau project analyzing sales and discounts for a furniture e-commerce business
 
 ## 🎯 Goal and Summary
