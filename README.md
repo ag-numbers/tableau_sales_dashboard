@@ -27,7 +27,7 @@ The data showed that most sales came from the Bedroom and Desk categories, makin
 ## 📁 Files
 - Interactive dashboard on Tableau Public https://public.tableau.com/views/Sales_orders_Project2_Alina/Story1?:language=en-GB&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link 
 
-<img width="953" height="508" alt="Screenshot 2025-11-19 at 11 56 35" src="https://github.com/user-attachments/assets/506694d5-0b3b-4300-b724-767504925aae" />
+<img width="971" height="678" alt="Screenshot 2025-11-19 at 11 58 21" src="https://github.com/user-attachments/assets/7818d231-58e7-4ce7-a485-a4275c26aff6" />
 
 <img width="975" height="679" alt="Screenshot 2025-11-04 at 15 54 05" src="https://github.com/user-attachments/assets/82dcc8c0-541b-498b-8217-9c413e6cc7cb" />
 
