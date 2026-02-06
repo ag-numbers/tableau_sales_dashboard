@@ -1,23 +1,28 @@
 # sql_tableau_sales_dashboard
-Tableau project analyzing sales and discounts for a furniture e-commerce business
+
 
 ## 🎯 Goal and Summary
-**Goal:** Design a dashboard to help a digital marketing manager analyze sales performance, product trends, and discount effectiveness for a furniture e-commerce website.
+**Goal:** A project aimed at showcasing data cleaning skills in SQL and visualizing and analyzing sales data for a furniture e-commerce store.
+
 **Summary:** Sales went up because of discounts, but profits went down.
-The data showed that most sales came from the Bedroom and Desk categories, making the business too dependent on them. To grow steadily, the company should balance its product mix and review its discount strategy.
+The data showed that most sales came from the Bedroom and Desk categories, making the business too dependent on them. 
 
 
-## 📊 Insights
-- Sales grew from April to June, then slightly declined in summer.
-- Quantity rose in August while AOV dropped — suggesting lower-priced purchases.
-- Discounts (~18%) increased over time, showing they strongly drive sales.
-- Desk and Bedroom categories generate 60%+ of sales, creating dependency risk.
-- Diversifying the product mix and promoting weaker categories can balance growth.
+**Analysis and recommendations to the business**
+- Sales grew from April to June, then slightly declined in summer. --> Check what caused lower sales- low traffic, stock issues, technical bug or price competitiveness. Act accordingly.
+- Quantity sold rose in August while AOV dropped suggesting lower-priced purchases. --> Implement upsell/cross sell strategy before the user checks out.
+- Discounts (~18%) increased over time, showing they strongly drive sales.--> Revise the strategy of discounts to keep value of products as the main driver for sales.
+- Desk and Bedroom categories generate 60%+ of sales, creating dependency risk. --> The business should promote other categoes to mitigate the risk. At the same time secure enough stock for bestselling products in tgese categories.
 
-## 🧹 Data Cleaning & Preparation
+## 🧹 Data Cleaning & Preparation in SQL
 - Cleaned and joined orders and events tables in **PostgreSQL**.
-- Handled nulls, duplicates, and missing IDs.
-- Created derived metrics like discount %, AOV, and session duration.
+- Handled nulls, removed duplicates
+- Standardized date/time formats
+- Set up correct data types
+- Checked and identified unique keys
+- Did data profiling to exclude ouliers, negative values.
+- Filled in data where lossibke for missing data 
+- Created derived calculated metrics like discount %, AOV, and session duration
 
 ## 🧰 Tools Used
 - **SQL (PostgreSQL)** — for cleaning and transformation  
