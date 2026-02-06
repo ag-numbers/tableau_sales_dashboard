@@ -8,21 +8,22 @@
 The data showed that most sales came from the Bedroom and Desk categories, making the business too dependent on them. 
 
 
-**Analysis and recommendations to the business**
+## 📊Analysis insights and recommendations to the business**
 - Sales grew from April to June, then slightly declined in summer. --> Check what caused lower sales- low traffic, stock issues, technical bug or price competitiveness. Act accordingly.
 - Quantity sold rose in August while AOV dropped suggesting lower-priced purchases. --> Implement upsell/cross sell strategy before the user checks out.
 - Discounts (~18%) increased over time, showing they strongly drive sales.--> Revise the strategy of discounts to keep value of products as the main driver for sales.
 - Desk and Bedroom categories generate 60%+ of sales, creating dependency risk. --> The business should promote other categoes to mitigate the risk. At the same time secure enough stock for bestselling products in tgese categories.
 
 ## 🧹 Data Cleaning & Preparation in SQL
-- Cleaned and joined orders and events tables in **PostgreSQL**.
-- Handled nulls, removed duplicates
-- Standardized date/time formats
-- Set up correct data types
+- Data profiling
 - Checked and identified unique keys
-- Did data profiling to exclude ouliers, negative values.
-- Filled in data where lossibke for missing data 
+- Standardized date/time formats
+- Standardize text across coluns (lowercase strings)
+- Set up correct data types
+- Handled nulls
 - Created derived calculated metrics like discount %, AOV, and session duration
+- Filled in data where possible for missing data
+- Checked for duplicates and negative values
 
 ## 🧰 Tools Used
 - **SQL (PostgreSQL)** — for cleaning and transformation  
